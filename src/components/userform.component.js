@@ -4,7 +4,10 @@ import {Alert, Button, Checkbox, Drawer, Form, Input, Row} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import UserService from "../services/user.service";
 
+
 export default class UpdateUserForm extends React.Component {
+    formRef = React.createRef();
+
     constructor(props) {
         super(props);
         this.handleAction = this.handleAction.bind(this);
@@ -21,9 +24,9 @@ export default class UpdateUserForm extends React.Component {
             roles: [],
             successful: false,
             message: "",
-            visible: false,
+            visible: false
         };
-        console.warn(this.props)
+        //console.warn(this.props)
     }
 
 
@@ -74,7 +77,7 @@ export default class UpdateUserForm extends React.Component {
                     message: resMessage
                 });
             },
-        ).then(this.props.set());
+        );
     }
 
 
@@ -108,28 +111,35 @@ export default class UpdateUserForm extends React.Component {
                     message: resMessage
                 });
             }
-        ).then(this.props.set());
+        );
     }
 
 
     handleAction(e) {
-        e.preventDefault();
+        //e.preventDefault();
 
         this.setState({
             message: "",
             successful: false
         });
+
         if (this.state.id) {
             this.update()
         } else {
             this.create()
         }
         this.setValues()
+        this.onReset()
+
+
     }
+
+    onReset = () => {
+        this.formRef.current.resetFields();
+    };
 
     setValues() {
         if (this.state.id) {
-            console.warn("!!!!!!!!!!!!!!!!")
             UserService.getUser(this.state.id).then(
                 response => {
                     this.setState({
@@ -146,11 +156,11 @@ export default class UpdateUserForm extends React.Component {
                 }
             );
         } else {
-            console.warn("????????????????????")
             this.setState({
                 username: "",
                 password: "",
                 roles: [],
+
             });
             console.warn(this.state)
         }
@@ -163,21 +173,26 @@ export default class UpdateUserForm extends React.Component {
     showDrawer = () => {
         this.setState({
             visible: true,
+            successful: false,
+            message: "",
         });
     };
 
     onClose = () => {
         this.setState({
             visible: false,
+            successful: false,
+            message: "",
         });
         this.setValues()
+        this.onReset()
+        //this.forceUpdate();
     };
 
-    onFinish = () => {
-    }
 
     render() {
         return (
+
             <>
                 <Button type="primary" onClick={this.showDrawer}>
                     {this.props.id ? <>Update {console.warn(this.state)}</> : <><PlusOutlined/> New account</>}
@@ -187,35 +202,40 @@ export default class UpdateUserForm extends React.Component {
                     title={this.state.id ? "Update account" : "Create new account"}
                     width={240}
                     onClose={this.onClose}
-                    visible={this.state.visible}
                     bodyStyle={{paddingBottom: 80}}
-                    footer={
-                        <div
-                            style={{
-                                textAlign: "right"
-                            }}
-                        >
-                            <Button onClick={this.onClose} style={{marginRight: 8}}>
+                    visible={this.state.visible}
+                    /*footer={
+                        <div style={{textAlign: "right"}}>
+                            <Button /!*ref={this.buttonRef}*!/ onClick={this.onClose} style={{marginRight: 8}}>
                                 Cancel
                             </Button>
-                            <Button onClick={this.handleAction} type="primary">
+                            <Button onClick={this.formRef.current} /!*onClick={this.handleAction} *!/ type="primary" htmlType="submit">
                                 Submit
                             </Button>
+
+                            form="myForm" key="submit" htmlType="submit"
                         </div>
-                    }
+                        }*/
                 >
+
                     <Form layout="vertical"
                           name="basic"
-                          /*initialValues={{
+                          ref={this.formRef}
+                          initialValues={this.state.id && {
+                              username: this.state.username,
+                              password: this.state.password,
+                              roles: this.state.roles,
                               remember: true,
-                          }}*/
+                          }}
+                          onFinish={this.handleAction}
                     >
+
                         <Row>
                             <Form.Item
                                 name="username"
                                 label="Username"
-                                initialValue={this.state.username}
                                 rules={[{
+                                    required: true,
                                     validator(rule, value = "") {
                                         if (value.length === 0) {
                                             return Promise.reject("Username field is required");
@@ -224,7 +244,7 @@ export default class UpdateUserForm extends React.Component {
                                         } else {
                                             return Promise.resolve();
                                         }
-                                    }, required: true
+                                    }
                                 }
                                 ]}
                             >
@@ -232,7 +252,6 @@ export default class UpdateUserForm extends React.Component {
                                     placeholder="Please enter user name"
                                     type="text"
                                     name="username"
-                                    defaultValue={this.state.username}
                                     value={this.state.username}
                                     onChange={this.onChangeUsername}/>
                             </Form.Item>
@@ -242,8 +261,8 @@ export default class UpdateUserForm extends React.Component {
                             <Form.Item
                                 name="password"
                                 label="Password"
-                                initialValue={this.state.password}
                                 rules={[{
+                                    required: true,
                                     validator(rule, value = "") {
                                         if (value.length === 0) {
                                             return Promise.reject("Password field is required");
@@ -252,14 +271,13 @@ export default class UpdateUserForm extends React.Component {
                                         } else {
                                             return Promise.resolve();
                                         }
-                                    }, required: true
+                                    }
                                 }]}
                             >
                                 <Input.Password
                                     placeholder="Please enter password"
                                     type="password"
                                     name="password"
-                                    defaultValue={this.state.password}
                                     value={this.state.password}
                                     onChange={this.onChangePassword}
                                 />
@@ -267,7 +285,10 @@ export default class UpdateUserForm extends React.Component {
                         </Row>
 
                         <Row>
-                            <Form.Item name="roles" label="Roles" initialValue={this.state.roles}>
+                            <Form.Item
+                                name="roles"
+                                label="Roles"
+                            >
                                 <Checkbox.Group name='roles' defaultValue={this.state.roles}
                                                 onChange={this.onChangeRole}>
                                     <Row>
@@ -300,6 +321,16 @@ export default class UpdateUserForm extends React.Component {
                         )
 
                         }
+
+                        <div style={{textAlign: "right"}}>
+                            <Button onClick={this.onClose} style={{marginRight: 8}}>
+                                Cancel
+                            </Button>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </div>
+
                     </Form>
 
                 </Drawer>

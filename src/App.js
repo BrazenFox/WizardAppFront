@@ -11,6 +11,7 @@ import Login from "./components/login.component";
 import Home from "./components/home.component";
 import User from "./components/user.component";
 import Wizard from "./components/wizard.component";
+import CreateWizardForm from "./components/createwizard.component";
 import { withRouter } from 'react-router'
 
 class App extends Component {
@@ -117,6 +118,7 @@ class App extends Component {
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/user" component={User}/>
                         <Route exact path="/wizard" component={Wizard}/>
+                        <Route exact path="/createwizard" component={CreateWizardForm}/>
 
                     </Switch>
                 </div>

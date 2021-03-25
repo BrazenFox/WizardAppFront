@@ -20,11 +20,10 @@ class WizardService {
         return g;
     }
 
-    createWizard(name, pages, buttons) {
+    createWizard(name, pages) {
         return axios.post(API_URL + "create", {
             name,
-            pages,
-            buttons
+            pages
         });
     }
 

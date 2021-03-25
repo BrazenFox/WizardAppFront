@@ -29,16 +29,16 @@ export default class BoardUser extends Component {
         UserService.getUsers().then(
             response => {
                 debugger;
-                const results= response.data.map(user => ({
+                const users= response.data.map(user => ({
                     key: user.id, // I added this line
                     username: user.username,
                     password: user.password,
                     roles: user.roles,
                     id: user.id
                 }))
-                {console.warn(results)}
+                {console.warn(users)}
                 this.setState({
-                    users: results
+                    users: users
 
                 });
             },

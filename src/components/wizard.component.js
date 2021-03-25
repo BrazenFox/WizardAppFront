@@ -2,7 +2,8 @@ import React, {Component, Suspense} from "react";
 import {Button, Space, Popconfirm, Table, Tag} from 'antd';
 import WizardService from "../services/wizard.service";
 import AuthService from "../services/auth.service";
-const CreateWizardForm = React.lazy(() => import('./createwizard.component'))
+import {Link} from "react-router-dom";
+
 
 export default class BoardUser extends Component {
     constructor(props) {
@@ -24,8 +25,24 @@ export default class BoardUser extends Component {
         WizardService.getWizards().then(
             response => {
                 debugger;
+                const wizards = response.data.map(wizard => ({
+                    key: wizard.id, // I added this line
+                    id: wizard.id,
+                    name: wizard.name,
+                    pages: wizard.pages.map(page =>({
+                        key: page.id,
+                        id: page.id,
+                        name: page.name,
+                        buttons: page.buttons.map(button =>({
+                            key:button.id,
+                            id:button.id,
+                            name:button.name
+                        }))
+                    }))
+
+                }))
                 this.setState({
-                    wizards: response.data
+                    wizards: wizards
 
                 });
                 console.warn(this.state.wizards)
@@ -61,12 +78,12 @@ export default class BoardUser extends Component {
                     <>
                         {pages.map(page => {
                             return (
-                                <Tag key={page}>
+                                <Tag key={page.key}>
                                     {page.name}
 
                                     {page.buttons.map(button => {
                                         return (
-                                            <Tag key={button}>
+                                            <Tag key={button.key}>
                                                 {button.name}
                                             </Tag>
                                         );
@@ -106,9 +123,9 @@ export default class BoardUser extends Component {
         ];
         return (
             <div>
-                <Suspense fallback={<h1>downloading...</h1>}>
-                    <CreateWizardForm/>
-                </Suspense>
+                <Link to={"/createwizard"}>
+                    Create wizard
+                </Link>
                 <Table columns={columns} dataSource={this.state.wizards}/>
 
 
