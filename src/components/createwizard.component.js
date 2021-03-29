@@ -1,8 +1,9 @@
 import React from "react";
 import "antd/dist/antd.css";
-import {Alert, Button, Checkbox, Drawer, Form, Input, Row, Select, Space} from "antd";
+import {Alert, Button, Checkbox, Drawer, Form, Input, Row, Select, Space, InputNumber} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import CreateWizard from "../services/wizard.service"
+import AuthService from "../services/auth.service"
 const {Option} = Select;
 
 
@@ -12,7 +13,8 @@ export default class DrawerForm extends React.Component {
 
         this.state = {
             name:"",
-            pages:[]
+            pages:[],
+            creator:""
             /*pages: [].map(page =>({
                 name:"",
                 buttons: [].map(button =>({
@@ -29,15 +31,19 @@ export default class DrawerForm extends React.Component {
         console.warn(value)
         this.setState({
             name:value.name,
+            creator:{id:AuthService.getCurrentUser().id},
             pages: value.pages.map(page =>({
                 name: page.name,
+                content: page.content,
+                number: page.number,
                 buttons: page.buttons.map(button =>({
-                    name:button.name
+                    name:button.name,
+                    toPage:button.toPage
                 }))
             }))
         })
         console.log(this.state)
-        CreateWizard.createWizard(this.state.name, this.state.pages)
+        CreateWizard.createWizard(this.state.name, this.state.pages, this.state.creator)
     }
 
     /*rules={[{
@@ -77,12 +83,32 @@ export default class DrawerForm extends React.Component {
                                         {/*<Space key={page.key} align="baseline">*/}
 
                                         <Form.Item
-                                            label="Page"
+                                            label="Name"
                                             name={[page.name, 'name']}
                                             fieldKey={[page.fieldKey, 'page']}
 
                                         >
                                             <Input/>
+
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label="Content"
+                                            name={[page.name, 'content']}
+                                            fieldKey={[page.fieldKey, 'page']}
+
+                                        >
+                                            <Input/>
+
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label="Number"
+                                            name={[page.name, 'number']}
+                                            fieldKey={[page.fieldKey, 'page']}
+
+                                        >
+                                            <InputNumber min={1}/>
 
                                         </Form.Item>
 
@@ -104,6 +130,16 @@ export default class DrawerForm extends React.Component {
                                                                 >
                                                                     <Input/>
                                                                 </Form.Item>
+
+                                                                <Form.Item
+                                                                    label="To Page"
+                                                                    name={[button.name, 'toPage']}
+                                                                    fieldKey={[button.fieldKey, 'button']}
+                                                                >
+                                                                    <InputNumber min={1} />
+                                                                </Form.Item>
+
+
 
                                                                 <MinusCircleOutlined
                                                                     onClick={() => remove(button.name)}/>
