@@ -100,12 +100,15 @@ export default class BoardUser extends Component {
                 dataIndex: 'id',
                 key: 'id',
 
-                render: (text) =>
+                render: (text, id) =>
 
                     (<Space size="middle">
-                       {/* <Suspense fallback={<h1>downloading...</h1>}>
-                            <UpdateUserForm id={text}/>
-                        </Suspense>*/}
+                        <Link to={"/runwizard/"+text}>
+                            run
+                        </Link>
+                        <Link to={"/updatewizard/"+text}>
+                            update
+                        </Link>
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.deleteWizard(text)}>
                             <Button type="primary" danger>
                                 Delete

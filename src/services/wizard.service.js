@@ -28,6 +28,14 @@ class WizardService {
         });
     }
 
+    updateWizard(id, name, pages, creator) {
+        return axios.put(API_URL + "update/" + id, {
+            name,
+            pages,
+            creator
+        });
+    }
+
 
 }
 
