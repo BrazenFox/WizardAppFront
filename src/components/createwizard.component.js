@@ -1,10 +1,11 @@
 import React from "react";
 import "antd/dist/antd.css";
-import {Button, Form, Input, InputNumber, Row, Select, Space} from "antd";
+import {Button, Form, Input, InputNumber, Row, Col, Select, Space, Layout, Divider} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import WizardService from "../services/wizard.service"
 import AuthService from "../services/auth.service"
 
+const {Header, Footer, Sider, Content} = Layout;
 const {Option} = Select;
 export default class WizardForm extends React.Component {
     formRef = React.createRef();
@@ -73,6 +74,7 @@ export default class WizardForm extends React.Component {
                         id: page.id,
                         name: page.name,
                         content: page.content,
+                        type: page.type,
                         buttons: page.buttons.map(button => ({
                             key: button.id,
                             id: button.id,
@@ -106,8 +108,6 @@ export default class WizardForm extends React.Component {
 
     componentDidMount() {
         this.setValues()
-
-
     }
 
     create(value) {
@@ -115,6 +115,7 @@ export default class WizardForm extends React.Component {
         const creator = {id: AuthService.getCurrentUser().id}
         const pages = value.pages.map(page => ({
             name: page.name,
+            type: page.type,
             content: page.content,
             buttons: page.buttons && page.buttons.map(button => ({
                 name: button.name,
@@ -139,6 +140,7 @@ export default class WizardForm extends React.Component {
         const pages = value.pages.map(page => ({
             name: page.name,
             content: page.content,
+            type: page.type,
             buttons: page.buttons && page.buttons.map(button => ({
                 name: button.name,
                 toPage: {
@@ -167,22 +169,21 @@ export default class WizardForm extends React.Component {
 
     }
 
-    test=(value)=>{
+    test = (value) => {
         console.warn(value)
     }
 
     validPage(value, field) {
         var count = 0
         value.fields.pages.forEach(page => {
-            if(page.name===field){
+            if (page.name === field) {
                 count++
             }
         })
 
-        if(count>=2){
+        if (count >= 2) {
             return Promise.reject("This page name is already taken");
-        }
-        else {
+        } else {
             return Promise.resolve();
         }
     }
@@ -190,14 +191,13 @@ export default class WizardForm extends React.Component {
     validButton(value, field) {
         var count = 0
         value.fields.buttons.forEach(button => {
-            if(button.name===field){
+            if (button.name === field) {
                 count++
             }
         })
-        if(count>=2){
+        if (count >= 2) {
             return Promise.reject("This button name is already taken on this page");
-        }
-        else {
+        } else {
             return Promise.resolve();
         }
     }
@@ -206,12 +206,14 @@ export default class WizardForm extends React.Component {
     render() {
         return (
             <>
-                <Form ref={this.formRef} name="dynamic_form_nest_item" onFinish={this.onFinish} onFinishFailed={this.test}
+                <Form ref={this.formRef} name="dynamic_form_nest_item" onFinish={this.onFinish}
+                      onFinishFailed={this.test}
                       onValuesChange={this.changeState}
                       initialValues={this.state.id && {
                           pages: this.state.pages,
                           name: this.state.name
                       }}>
+
                     <Row>
                         <Form.Item
                             key="code"
@@ -226,113 +228,144 @@ export default class WizardForm extends React.Component {
                         </Form.Item>
                     </Row>
 
+
                     <Form.List name="pages">
                         {(pages, {add, remove}) => (
                             <>
                                 {pages.map(page => (
-                                    <Row>
-
-                                        {/*<Space key={page.key} align="baseline">*/}
-
-                                        <Form.Item
-                                            label="Name"
-                                            name={[page.name, 'name']}
-                                            fieldKey={[page.fieldKey, 'page']}
-                                            rules={[{
-                                                required: true,
-                                                message: "Page name is required"
-                                            }, {
-                                                fields: this.state,
-                                                validator: this.validPage
-                                            }]}
-                                        >
-                                            <Input/>
-
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="Content"
-                                            name={[page.name, 'content']}
-                                            fieldKey={[page.fieldKey, 'page']}
-                                            rules={[{
-                                                required: true,
-                                                message: "Page content is required"
-                                            }]}
-
-                                        >
-                                            <Input/>
-
-                                        </Form.Item>
+                                    <>
+                                        <Divider orientation="center">Page {page.name}</Divider>
+                                        <Row gutter={[8, 8]}>
 
 
-                                        <Form.Item
-                                            fieldKey={[page.fieldKey, page.key]}>
-                                            <Form.List name={[page.name, 'buttons']}>
-                                                {(buttons, {add, remove}) => (
-                                                    <>
-                                                        {buttons.map(button => (
+                                            {/*<Space key={page.key} size={10} align="start">*/}
+                                            <Col flex={1}>
+                                                <MinusCircleOutlined className="dynamic-delete-button"
+                                                                     onClick={() => remove(page.name)}/>
+                                            </Col>
+                                            <Col flex={1}>
+                                                <Form.Item
+                                                    label="Name"
+                                                    name={[page.name, 'name']}
+                                                    fieldKey={[page.fieldKey, 'page']}
+                                                    rules={[{
+                                                        required: true,
+                                                        message: "Page name is required"
+                                                    }, {
+                                                        fields: this.state,
+                                                        validator: this.validPage
+                                                    }]}
+                                                >
+                                                    <Input/>
 
-                                                            /*<Space key={button.key} align="baseline">*/
+                                                </Form.Item>
+                                            </Col>
+                                            <Col flex={1}>
+                                                <Form.Item name={[page.name, 'type']}
+                                                           fieldKey={[page.fieldKey, 'page']}
+                                                           label="Type:"
+                                                           rules={[{
+                                                               required: true,
+                                                               message: "Button type is required"
+                                                           }]}>
+                                                    {/*{console.log(pages)}*/}
+                                                    <Select
+                                                        placeholder="Select a type"
+                                                        allowClear
+                                                    >
+                                                        <Option value="START">START</Option>
+                                                        <Option value="REGULAR">REGULAR</Option>
+                                                        <Option value="FINISH">FINISH</Option>
+                                                    </Select>
+                                                </Form.Item>
+                                            </Col>
+
+                                            <Col flex={1}>
+                                                <Form.Item
+                                                    label="Content"
+                                                    name={[page.name, 'content']}
+                                                    fieldKey={[page.fieldKey, 'page']}
+                                                    rules={[{
+                                                        required: true,
+                                                        message: "Page content is required"
+                                                    }]}
+
+                                                >
+                                                    <Input/>
+
+                                                </Form.Item>
+                                            </Col>
+
+                                            <Col flex={2}>
+                                                <Form.Item
+                                                    fieldKey={[page.fieldKey, page.key]}>
+                                                    <Form.List name={[page.name, 'buttons']}>
+                                                        {(buttons, {add, remove}) => (
                                                             <>
+                                                                {buttons.map(button => (
 
-                                                                <Form.Item
-                                                                    label="Button"
-                                                                    name={[button.name, 'name']}
-                                                                    fieldKey={[button.fieldKey, 'button']}
-                                                                    rules={[{
-                                                                        required: true,
-                                                                        message: "Button name is required"
-                                                                    },{fields: this.state.pages[page.key],
-                                                                        validator:this.validButton}]}
-                                                                >
-                                                                    <Input/>
+                                                                    /*<Space key={button.key} size={10} align="start">*/
+                                                                    <>
+                                                                        <MinusCircleOutlined
+                                                                            className="dynamic-delete-button"
+                                                                            onClick={() => remove(button.name)}/>
+
+                                                                        <Form.Item
+                                                                            label="Button"
+                                                                            name={[button.name, 'name']}
+                                                                            fieldKey={[button.fieldKey, 'button']}
+                                                                            rules={[{
+                                                                                required: true,
+                                                                                message: "Button name is required"
+                                                                            }, {
+                                                                                fields: this.state.pages[page.key],
+                                                                                validator: this.validButton
+                                                                            }]}
+                                                                        >
+                                                                            <Input/>
+                                                                        </Form.Item>
+
+
+                                                                        <Form.Item name={[button.name, 'toPage']}
+                                                                                   fieldKey={[button.fieldKey, 'button']}
+                                                                                   label="Link to:"
+                                                                                   rules={[{
+                                                                                       required: true,
+                                                                                       message: "Button link is required"
+                                                                                   }]}>
+                                                                            {/*{console.log(pages)}*/}
+                                                                            <Select
+                                                                                placeholder="Select a option and change input text above"
+                                                                                allowClear
+                                                                            >
+                                                                                {this.state.pages.map(selectpage => (
+                                                                                    <Option
+                                                                                        value={selectpage && selectpage.name}>{selectpage && selectpage.name}</Option>
+                                                                                ))}
+                                                                            </Select>
+                                                                        </Form.Item>
+                                                                    </>
+
+                                                                    /*</Space>*/
+                                                                ))}
+
+                                                                <Form.Item>
+                                                                    <Button type="dashed" onClick={() => add()} block
+                                                                            icon={<PlusOutlined/>}>
+                                                                        Add button
+                                                                    </Button>
                                                                 </Form.Item>
-
-                                                                <Form.Item name={[button.name, 'toPage']}
-                                                                           fieldKey={[button.fieldKey, 'button']}
-                                                                           label="Link to:"
-                                                                           rules={[{
-                                                                               required: true,
-                                                                               message: "Button link is required"
-                                                                           }]}>
-                                                                    {/*{console.log(pages)}*/}
-                                                                    <Select
-                                                                        placeholder="Select a option and change input text above"
-                                                                        allowClear
-                                                                    >
-                                                                        {this.state.pages.map(selectpage => (
-                                                                            <Option
-                                                                                value={selectpage && selectpage.name}>{selectpage && selectpage.name}</Option>
-                                                                        ))}
-                                                                    </Select>
-                                                                </Form.Item>
-
-
-                                                                <MinusCircleOutlined
-                                                                    onClick={() => remove(button.name)}/>
                                                             </>
+                                                        )}
+                                                    </Form.List>
+                                                </Form.Item>
+                                            </Col>
 
-                                                            /*</Space>*/
-                                                        ))}
-
-                                                        <Form.Item>
-                                                            <Button type="dashed" onClick={() => add()} block
-                                                                    icon={<PlusOutlined/>}>
-                                                                Add button
-                                                            </Button>
-                                                        </Form.Item>
-                                                    </>
-                                                )}
-                                            </Form.List>
-                                            <MinusCircleOutlined onClick={() => remove(page.name)}/>
+                                            {/*</Space>*/}
 
 
-                                        </Form.Item>
-
-                                        {/*</Space>*/}
-
-
-                                    </Row>
+                                        </Row>
+                                    </>
                                 ))}
 
                                 <Form.Item>
