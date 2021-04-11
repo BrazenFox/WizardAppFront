@@ -2,68 +2,58 @@ import React, {Component, Suspense} from "react";
 import {Button, Space, Popconfirm, Table, Tag} from 'antd';
 import WizardService from "../services/wizard.service";
 import AuthService from "../services/auth.service";
+import ResultService from "../services/result.service";
 import {Link} from "react-router-dom";
 
 
-export default class WizardTable extends Component {
+export default class ResultTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            wizards: []
+            results: []
         };
     }
 
 
     deleteWizard(id) {
-        WizardService.deleteWizard(id).then(() => this.componentDidMount());
+        ResultService.deleteResult(id).then(() => this.componentDidMount());
 
         //window.location.reload();
         //this.props.history.push('/user')
     }
 
     componentDidMount() {
-        WizardService.getWizards().then(
+
+        ResultService.getResults(AuthService.getCurrentUser().id, AuthService.getCurrentUser().roles).then(
             response => {
-                debugger;
-                const wizards = response.data.map(wizard => ({
-                    key: wizard.id, // I added this line
-                    id: wizard.id,
-                    name: wizard.name,
-                    pages: wizard.pages.map(page =>({
-                        key: page.id,
-                        id: page.id,
-                        name: page.name,
-                        buttons: page.buttons.map(button =>({
-                            key:button.id,
-                            id:button.id,
-                            name:button.name
-                        }))
+                console.log(response.data)
+                const results = response.data.map(result=>({
+                    key:result.id,
+                    id:result.id,
+                    wizard: result.wizard.name,
+                    user:result.user.username,
+                    notes:result.note.map(n=>({
+                        pageId:n.pageId,
+                        buttonId:n.buttonId
                     }))
 
                 }))
+                console.log(results)
                 this.setState({
-                    wizards: wizards
+                    results: results
 
                 });
-                console.warn(this.state.wizards)
+                console.warn(this.state.results)
             },
             error => {
                 //console.warn(error)
-                this.setState({
-                    users:
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString()
-                });
             }
         );
     }
 
 
     render() {
-        const columns = [
+        /*const columns = [
             {
                 title: 'Wizard',
                 dataIndex: 'name',
@@ -115,24 +105,19 @@ export default class WizardTable extends Component {
                             </Button>
                         </Popconfirm>
                     </Space>)
-                /*render: (text, dataSource) =>
+                /!*render: (text, dataSource) =>
                     this.state.users.length >= 1 ? (
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.deleteUser(text)}>
                             <a>Delete</a>
                         </Popconfirm>
-                    ) : null,*/
+                    ) : null,*!/
 
             },
-        ];
-        return (
-            <div>
-                <Link to={"/createwizard"}>
-                    Create wizard
-                </Link>
-                <Table columns={columns} dataSource={this.state.wizards}/>
-
-
-            </div>
+        ];*/
+        return (<></>
+           /* <div>
+                <Table columns={columns} dataSource={this.state.results}/>
+            </div>*/
         );
     }
 }

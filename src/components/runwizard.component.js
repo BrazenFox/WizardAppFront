@@ -24,7 +24,7 @@ export default class RunWizard extends Component {
         WizardService.getWizard(this.state.id).then(
             response => {
                 debugger;
-                console.log(response.data)
+                //console.log(response.data)
                 const name = response.data.name
                 const creator = response.data.creator
                 const pages = response.data.pages.map(page => ({
@@ -39,13 +39,14 @@ export default class RunWizard extends Component {
                         name: button.name,
                         toPage: {
                             id: button.toPage.id,
-                            name: button.toPage.name
+                            name: button.toPage.name,
+                            type: button.toPage.type
                         }
                     }))
 
 
                 }))
-                console.log(pages)
+                //console.log(pages)
                 const current = pages.find(page => page.type === "START")
                 const currentPage = {
                     key: current.id,
@@ -59,7 +60,8 @@ export default class RunWizard extends Component {
                         name: button.name,
                         toPage: {
                             id: button.toPage.id,
-                            name: button.toPage.name
+                            name: button.toPage.name,
+                            type: button.toPage.type
                         }
                     }))
                 }
@@ -88,26 +90,23 @@ export default class RunWizard extends Component {
 
     }
 
-    currentP(pageId, buttonId) {
-        console.log(pageId, buttonId)
-        const currentPage = this.state.pages.find(page => page.id === pageId)
+    currentP(toPageId, pageId, buttonId) {
+        const currentPage = this.state.pages.find(page => page.id === toPageId)
         const notes = this.state.notes
         notes.push({
-            pageId: currentPage.id,
+            pageId: pageId,
             buttonId: buttonId
         })
         this.setState({
             currentPage: currentPage,
             notes: notes
         })
-        console.warn(this.state)
-        /*if (this.state.currentPage.type === "FINISH") {*/
-        console.log("FINISH")
-        ResultService.createResult(AuthService.getCurrentUser().id, this.state.id, notes)
-        /*}*/
-        //console.log(this.state.currentPage, "!!!!!!!!!!!!!!")
-        return (<></>
-        )
+        if (this.state.pages.find(page => page.id === toPageId).type === "FINISH") {
+            console.log("FINISH")
+            ResultService.createResult(AuthService.getCurrentUser().id, this.state.id, notes)
+        }
+        /*return (<></>
+        )*/
 
     }
 
@@ -126,7 +125,7 @@ export default class RunWizard extends Component {
                     <li>{this.state.currentPage.content}</li>
                     {this.state.currentPage && console.log(this.state.currentPage.buttons)}
                     {this.state.currentPage && this.state.currentPage.buttons.map((button) =>
-                        (<Button key={button.key} onClick={() => this.currentP(button.toPage.id, button.id)}>
+                        (<Button key={button.key} onClick={() => this.currentP(button.toPage.id,this.state.currentPage.id, button.id)}>
                             {button.name}
                         </Button>))}
 

@@ -13,7 +13,8 @@ import User from "./components/user.component";
 import Wizard from "./components/wizard.component";
 import CreateWizardForm from "./components/createwizard.component";
 import RunWizard from "./components/runwizard.component";
-import { withRouter } from 'react-router'
+import Result from "./components/result.component"
+import {withRouter} from 'react-router'
 
 class App extends Component {
     constructor(props) {
@@ -24,15 +25,12 @@ class App extends Component {
             showWizardRunBoard: false,
             showWizardEditBoard: false,
             showUserBoard: false,
+            showResults: false,
             showWizards: false,
             currentUser: undefined,
             current: '',
         };
     }
-
-    /*state = {
-        current: 'mail',
-    };*/
 
     componentDidMount() {
         const user = AuthService.getCurrentUser();
@@ -40,6 +38,7 @@ class App extends Component {
         if (user) {
             this.setState({
                     currentUser: user,
+                    showResults: user.roles.includes("ADMIN") || user.roles.includes("MODERATOR"),
                     showWizards: user.roles.includes("ADMIN") || user.roles.includes("MODERATOR") || user.roles.includes("USER"),
                     showUserBoard: user.roles.includes("ADMIN")
 
@@ -59,7 +58,7 @@ class App extends Component {
     };
 
     render() {
-        const {current, currentUser, showWizards, showUserBoard} = this.state;
+        const {current, currentUser, showWizards, showUserBoard, showResults} = this.state;
         {
             currentUser &&
             console.log(currentUser);
@@ -110,12 +109,28 @@ class App extends Component {
                             </Link>
                         </Menu.Item>
                     )}
+                    {currentUser && (
+                        <Menu.Item key="3">
+                            <Link to={"/yourresults"}>
+                                Your results
+                            </Link>
+                        </Menu.Item>
+                    )}
+                    {showResults && (
+                        <Menu.Item key="4">
+                            <Link to={"/yourwizards"}>
+                                Your wizards
+                            </Link>
+                        </Menu.Item>
+                    )}
 
 
                 </Menu>
                 <div className="container mt-1">
                     <Switch>
                         <Route exact path={["/", "/home"]} component={Home}/>
+                        <Route exact path={["/yourresults"]} component={Result}/>
+                        <Route exact path={["/yourwizards"]} component={Result}/>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/user" component={User}/>
                         <Route exact path="/wizard" component={Wizard}/>

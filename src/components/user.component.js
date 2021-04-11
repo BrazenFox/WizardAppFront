@@ -8,7 +8,7 @@ const UpdateUserForm = React.lazy(() => import('./updateuser.component'))*/
 const UserForm = React.lazy(() => import('./userform.component'))
 
 
-export default class BoardUser extends Component {
+export default class UserTable extends Component {
     constructor(props) {
         super(props);
         this.setUsers = this.setUsers.bind(this)
