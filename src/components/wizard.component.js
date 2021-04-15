@@ -3,9 +3,10 @@ import {Button, Space, Popconfirm, Table, Tag} from 'antd';
 import WizardService from "../services/wizard.service";
 import AuthService from "../services/auth.service";
 import {Link} from "react-router-dom";
+import {PlusOutlined} from "@ant-design/icons";
 
 
-export default class BoardUser extends Component {
+export default class WizardTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,14 +30,15 @@ export default class BoardUser extends Component {
                     key: wizard.id, // I added this line
                     id: wizard.id,
                     name: wizard.name,
-                    pages: wizard.pages.map(page =>({
+                    creator: wizard.creator.username,
+                    pages: wizard.pages.map(page => ({
                         key: page.id,
                         id: page.id,
                         name: page.name,
-                        buttons: page.buttons.map(button =>({
-                            key:button.id,
-                            id:button.id,
-                            name:button.name
+                        buttons: page.buttons.map(button => ({
+                            key: button.id,
+                            id: button.id,
+                            name: button.name
                         }))
                     }))
 
@@ -71,29 +73,29 @@ export default class BoardUser extends Component {
                 //render: text => <a>{text}</a>,
             },
             {
-                title: 'Data',
-                dataIndex: 'pages',
-                key: 'pages',
-                render: pages => (
-                    <>
-                        {pages.map(page => {
-                            return (
-                                <Tag key={page.key}>
-                                    {page.name}
+                title: 'Creator',
+                dataIndex: 'creator',
+                key: 'creator',
+                /* render: pages => (
+                     <>
+                         {pages.map(page => {
+                             return (
+                                 <Tag key={page.key}>
+                                     {page.name}
 
-                                    {page.buttons.map(button => {
-                                        return (
-                                            <Tag key={button.key}>
-                                                {button.name}
-                                            </Tag>
-                                        );
-                                    })}
+                                     {page.buttons.map(button => {
+                                         return (
+                                             <Tag key={button.key}>
+                                                 {button.name}
+                                             </Tag>
+                                         );
+                                     })}
 
-                                </Tag>
-                            );
-                        })}
-                    </>
-                ),
+                                 </Tag>
+                             );
+                         })}
+                     </>
+                 ),*/
             },
             {
                 title: 'Action',
@@ -103,12 +105,17 @@ export default class BoardUser extends Component {
                 render: (text, id) =>
 
                     (<Space size="middle">
-                        <Link to={"/runwizard/"+text}>
-                            run
-                        </Link>
-                        <Link to={"/updatewizard/"+text}>
-                            update
-                        </Link>
+                        <Button type="primary" style={{background: "#73d13d", borderColor: "#73d13d"}}>
+                            <Link to={"/runwizard/" + text}>
+                                run
+                            </Link>
+                        </Button>
+                        <Button type="primary">
+                            <Link to={"/updatewizard/" + text}>
+                                update
+                            </Link>
+                        </Button>
+
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.deleteWizard(text)}>
                             <Button type="primary" danger>
                                 Delete
@@ -126,10 +133,16 @@ export default class BoardUser extends Component {
         ];
         return (
             <div>
-                <Link to={"/createwizard"}>
-                    Create wizard
-                </Link>
-                <Table columns={columns} dataSource={this.state.wizards}/>
+                <Button type="primary">
+                    <Link to={"/createwizard"}>
+                        <PlusOutlined/> Create wizard
+                    </Link>
+                </Button>
+
+                <Table
+                    bordered
+                    columns={columns}
+                    dataSource={this.state.wizards}/>
 
 
             </div>

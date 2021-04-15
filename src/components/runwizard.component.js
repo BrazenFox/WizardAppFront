@@ -1,11 +1,12 @@
 import React, {Component, Suspense, Fragment} from "react";
-import {Button, Space, Popconfirm, Table, Tag} from 'antd';
+import {Button, Space, Popconfirm, Table, Tag, Card, Avatar} from 'antd';
 import WizardService from "../services/wizard.service";
 import AuthService from "../services/auth.service";
 import ResultService from "../services/result.service";
+import '../App.css'
 import {Link} from "react-router-dom";
 
-
+const {Meta} = Card
 export default class RunWizard extends Component {
     constructor(props) {
         super(props);
@@ -15,6 +16,7 @@ export default class RunWizard extends Component {
             name: "",
             creator: "",
             pages: [],
+            notes: []
         };
         //console.log(this.state)
     }
@@ -23,7 +25,7 @@ export default class RunWizard extends Component {
         WizardService.getWizard(this.state.id).then(
             response => {
                 debugger;
-                console.log(response.data)
+                //console.log(response.data)
                 const name = response.data.name
                 const creator = response.data.creator
                 const pages = response.data.pages.map(page => ({
@@ -31,31 +33,36 @@ export default class RunWizard extends Component {
                     id: page.id,
                     name: page.name,
                     content: page.content,
+                    type: page.type,
                     buttons: page.buttons.map(button => ({
                         key: button.id,
                         id: button.id,
                         name: button.name,
                         toPage: {
                             id: button.toPage.id,
-                            name: button.toPage.name
+                            name: button.toPage.name,
+                            type: button.toPage.type
                         }
                     }))
 
 
                 }))
-                const current = pages[0]//.find(page => page.number === 1)
+                //console.log(pages)
+                const current = pages.find(page => page.type === "START")
                 const currentPage = {
                     key: current.id,
                     id: current.id,
                     name: current.name,
                     content: current.content,
+                    type: current.type,
                     buttons: current.buttons.map(button => ({
                         key: button.id,
                         id: button.id,
                         name: button.name,
                         toPage: {
                             id: button.toPage.id,
-                            name: button.toPage.name
+                            name: button.toPage.name,
+                            type: button.toPage.type
                         }
                     }))
                 }
@@ -84,15 +91,23 @@ export default class RunWizard extends Component {
 
     }
 
-    currentP(idnumber) {
-        const p = this.state.pages.find(page => page.id === idnumber)
-        //console.log(p)
-        this.setState({currentPage: p})
-        console.warn(this.state)
-        ResultService.createResult(AuthService.getCurrentUser().id, this.state.id,"String")
-        //console.log(this.state.currentPage, "!!!!!!!!!!!!!!")
-        return (<></>
-        )
+    currentP(toPageId, pageId, buttonId) {
+        const currentPage = this.state.pages.find(page => page.id === toPageId)
+        const notes = this.state.notes
+        notes.push({
+            page: {id: pageId},
+            button: {id: buttonId}
+        })
+        this.setState({
+            currentPage: currentPage,
+            notes: notes
+        })
+        if (this.state.pages.find(page => page.id === toPageId).type === "FINISH") {
+            console.log("FINISH")
+            ResultService.createResult(AuthService.getCurrentUser().id, this.state.id, notes)
+        }
+        /*return (<></>
+        )*/
 
     }
 
@@ -100,36 +115,22 @@ export default class RunWizard extends Component {
     render() {
 
         return (
-            <>
-                <div>
-                    {this.state.name}
+            <div className="form-wizard form-wizard-container">
+                <div className="form-title">
+                    <Avatar size={40}>{this.state.creator && this.state.creator.username.toUpperCase()}</Avatar>
+                    "{this.state.name}"
                 </div>
-
-                <div>
-
-                    <li>{this.state.currentPage.name}</li>
-                    <li>{this.state.currentPage.content}</li>
-                    {this.state.currentPage && console.log(this.state.currentPage.buttons)}
+                <div className="form-name">{this.state.currentPage.name}</div>
+                <div className="form-wizard form-content">{this.state.currentPage.content}</div>
+                <div className="form-buttons">
                     {this.state.currentPage && this.state.currentPage.buttons.map((button) =>
-                        (<Button key={button.key} onClick={() => this.currentP(button.toPage.id)}>
+                        (<Button key={button.key} className="form-button" type={"primary"}
+                                 onClick={() => this.currentP(button.toPage.id, this.state.currentPage.id, button.id)}>
                             {button.name}
                         </Button>))}
-
-
                 </div>
-
-                {/* <dl>
-                    {this.state.pages.map(page => (
-                        // При отображении коллекций фрагменты обязательно должны иметь атрибут `key`
-                        <Fragment key={page.id}>
-                            <dt>{page.name}</dt>
-                            <dd>{page.content}</dd>
-                        </Fragment>
-                    ))}
-                </dl>*/}
-
-
-            </>
+            </div>
         );
     }
 }
+
