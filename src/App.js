@@ -13,7 +13,8 @@ import User from "./components/user.component";
 import Wizard from "./components/wizard.component";
 import CreateWizardForm from "./components/createwizard.component";
 import RunWizard from "./components/runwizard.component";
-import Result from "./components/result.component"
+import ResultsForUser from "./components/resultforuser.component"
+import ResultsForCreator from "./components/resultforcreator.component"
 import {withRouter} from 'react-router'
 
 class App extends Component {
@@ -111,14 +112,14 @@ class App extends Component {
                     )}
                     {currentUser && (
                         <Menu.Item key="3">
-                            <Link to={"/yourresults"}>
+                            <Link to={"/resultsforuser"}>
                                 Your results
                             </Link>
                         </Menu.Item>
                     )}
                     {showResults && (
                         <Menu.Item key="4">
-                            <Link to={"/yourwizards"}>
+                            <Link to={"/resultsforcreator"}>
                                 Your wizards
                             </Link>
                         </Menu.Item>
@@ -129,8 +130,8 @@ class App extends Component {
                 <div className="container mt-1">
                     <Switch>
                         <Route exact path={["/", "/home"]} component={Home}/>
-                        <Route exact path={["/yourresults"]} component={Result}/>
-                        <Route exact path={["/yourwizards"]} component={Result}/>
+                        <Route exact path="/resultsforuser" component={ResultsForUser}/>
+                        <Route exact path="/resultsforcreator" component={ResultsForCreator}/>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/user" component={User}/>
                         <Route exact path="/wizard" component={Wizard}/>

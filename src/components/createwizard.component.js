@@ -4,6 +4,7 @@ import {Button, Form, Input, InputNumber, Row, Col, Select, Space, Layout, Divid
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import WizardService from "../services/wizard.service"
 import AuthService from "../services/auth.service"
+import {useHistory} from "react-router-dom";
 
 const {Header, Footer, Sider, Content} = Layout;
 const {Option} = Select;
@@ -124,14 +125,12 @@ export default class WizardForm extends React.Component {
                 }
             }))
         }))
-        /*console.log(new Set(pages.map(a => a.name)).size === pages.length)
-        console.log(!pages.map(page => (page.buttons && new Set(page.buttons.map(button => button.name)).size === page.buttons.length)).some(elem => elem === false))*/
         this.setState({
             name: name,
             creator: creator,
             pages: pages
         })
-        WizardService.createWizard(this.state.name, this.state.pages, this.state.creator)
+        WizardService.createWizard(this.state.name, this.state.pages, this.state.creator).then(() => {this.props.history.push("/wizard")})
     }
 
     update(value) {
@@ -155,7 +154,7 @@ export default class WizardForm extends React.Component {
             pages: pages
         })
         console.log(this.state)
-        WizardService.updateWizard(this.state.id, this.state.name, this.state.pages, this.state.creator)
+        WizardService.updateWizard(this.state.id, this.state.name, this.state.pages, this.state.creator).then(() => {this.props.history.push("/wizard")})
     }
 
 
@@ -166,7 +165,6 @@ export default class WizardForm extends React.Component {
         } else {
             this.create(value)
         }
-
     }
 
     test = (value) => {

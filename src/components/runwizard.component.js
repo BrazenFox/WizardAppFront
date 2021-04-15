@@ -1,11 +1,12 @@
 import React, {Component, Suspense, Fragment} from "react";
-import {Button, Space, Popconfirm, Table, Tag} from 'antd';
+import {Button, Space, Popconfirm, Table, Tag, Card, Avatar} from 'antd';
 import WizardService from "../services/wizard.service";
 import AuthService from "../services/auth.service";
 import ResultService from "../services/result.service";
+import '../App.css'
 import {Link} from "react-router-dom";
 
-
+const {Meta} = Card
 export default class RunWizard extends Component {
     constructor(props) {
         super(props);
@@ -94,8 +95,8 @@ export default class RunWizard extends Component {
         const currentPage = this.state.pages.find(page => page.id === toPageId)
         const notes = this.state.notes
         notes.push({
-            pageId: pageId,
-            buttonId: buttonId
+            page: {id: pageId},
+            button: {id: buttonId}
         })
         this.setState({
             currentPage: currentPage,
@@ -114,36 +115,22 @@ export default class RunWizard extends Component {
     render() {
 
         return (
-            <>
-                <div>
-                    {this.state.name}
+            <div className="form-wizard form-wizard-container">
+                <div className="form-title">
+                    <Avatar size={40}>{this.state.creator && this.state.creator.username.toUpperCase()}</Avatar>
+                    "{this.state.name}"
                 </div>
-
-                <div>
-
-                    <li>{this.state.currentPage.name}</li>
-                    <li>{this.state.currentPage.content}</li>
-                    {this.state.currentPage && console.log(this.state.currentPage.buttons)}
+                <div className="form-name">{this.state.currentPage.name}</div>
+                <div className="form-wizard form-content">{this.state.currentPage.content}</div>
+                <div className="form-buttons">
                     {this.state.currentPage && this.state.currentPage.buttons.map((button) =>
-                        (<Button key={button.key} onClick={() => this.currentP(button.toPage.id,this.state.currentPage.id, button.id)}>
+                        (<Button key={button.key} className="form-button" type={"primary"}
+                                 onClick={() => this.currentP(button.toPage.id, this.state.currentPage.id, button.id)}>
                             {button.name}
                         </Button>))}
-
-
                 </div>
-
-                {/* <dl>
-                    {this.state.pages.map(page => (
-                        // При отображении коллекций фрагменты обязательно должны иметь атрибут `key`
-                        <Fragment key={page.id}>
-                            <dt>{page.name}</dt>
-                            <dd>{page.content}</dd>
-                        </Fragment>
-                    ))}
-                </dl>*/}
-
-
-            </>
+            </div>
         );
     }
 }
+
