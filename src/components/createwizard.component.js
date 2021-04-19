@@ -1,12 +1,10 @@
 import React from "react";
 import "antd/dist/antd.css";
-import {Button, Form, Input, InputNumber, Row, Col, Select, Space, Layout, Divider} from "antd";
+import {Alert, Button, Col, Divider, Form, Input, Row, Select} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import WizardService from "../services/wizard.service"
 import AuthService from "../services/auth.service"
-import {useHistory} from "react-router-dom";
 
-const {Header, Footer, Sider, Content} = Layout;
 const {Option} = Select;
 export default class WizardForm extends React.Component {
     formRef = React.createRef();
@@ -19,19 +17,9 @@ export default class WizardForm extends React.Component {
             name: "",
             pages: [],
             creator: "",
-            /*pages_1: [{
-                name: "",
-                content: "",
-                buttons: [{
-                    name: "",
-                    toPage: ""
-                }]
-            }
-            ]*/
+            successful: false,
+            message: "",
         }
-        //console.log(this.state.id)
-
-
     }
 
     changeState(value, allvalues) {
@@ -130,7 +118,28 @@ export default class WizardForm extends React.Component {
             creator: creator,
             pages: pages
         })
-        WizardService.createWizard(this.state.name, this.state.pages, this.state.creator).then(() => {this.props.history.push("/wizard")})
+        WizardService.createWizard(this.state.name, this.state.pages, this.state.creator).then(
+            response => {
+                this.setState({
+                    message: response.data.message,
+                    successful: true,
+                });
+                this.props.history.push("/wizard")
+            },
+            error => {
+                const resMessage =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+
+                this.setState({
+                    successful: false,
+                    message: resMessage
+                });
+            },
+        );
     }
 
     update(value) {
@@ -154,12 +163,37 @@ export default class WizardForm extends React.Component {
             pages: pages
         })
         console.log(this.state)
-        WizardService.updateWizard(this.state.id, this.state.name, this.state.pages, this.state.creator).then(() => {this.props.history.push("/wizard")})
+        WizardService.updateWizard(this.state.id, this.state.name, this.state.pages, this.state.creator).then(
+            response => {
+                this.setState({
+                    message: response.data.message,
+                    successful: true,
+                });
+                this.props.history.push("/wizard")
+            },
+            error => {
+                const resMessage =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+
+                this.setState({
+                    successful: false,
+                    message: resMessage
+                });
+            },
+        );
     }
 
 
     onFinish = (value) => {
         console.warn(value, "!!!!!!!!!!!!!!!!!!!!!!!!!")
+        this.setState({
+            message: "",
+            successful: false
+        })
         if (this.state.id) {
             this.update(value)
         } else {
@@ -200,6 +234,20 @@ export default class WizardForm extends React.Component {
         }
     }
 
+    validType(value, field) {
+        var count = 0
+        value.fields.pages.forEach(page => {
+            if (page.type === "START") {
+                count++
+            }
+        })
+        if (count > 1) {
+            return Promise.reject("There can be only one START page");
+        } else {
+            return Promise.resolve();
+        }
+    }
+
 
     render() {
         return (
@@ -212,6 +260,18 @@ export default class WizardForm extends React.Component {
                           name: this.state.name
                       }}>
 
+                    {this.state.message && (
+                        <Alert message={this.state.message} type={
+                            this.state.successful
+                                ? "success"
+                                : "warning"
+                        } showIcon/>
+                    )
+
+                    }
+
+
+
                     <Row>
                         <Form.Item
                             key="code"
@@ -223,6 +283,11 @@ export default class WizardForm extends React.Component {
                             }]}
                         >
                             <Input/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button style={{marginLeft: 10}} type={"primary"} onClick={this.onReset}>
+                                Reset fields
+                            </Button>
                         </Form.Item>
                     </Row>
 
@@ -264,7 +329,10 @@ export default class WizardForm extends React.Component {
                                                            label="Type:"
                                                            rules={[{
                                                                required: true,
-                                                               message: "Button type is required"
+                                                               message: "Type is required"
+                                                           }, {
+                                                               fields: this.state,
+                                                               validator: this.validType
                                                            }]}>
                                                     {/*{console.log(pages)}*/}
                                                     <Select
@@ -379,6 +447,9 @@ export default class WizardForm extends React.Component {
                             Submit
                         </Button>
                     </Form.Item>
+
+
+
                 </Form>
             </>
 

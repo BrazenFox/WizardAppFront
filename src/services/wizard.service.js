@@ -25,7 +25,7 @@ class WizardService {
             name,
             pages,
             creator
-        });
+        }, { headers: authHeader() });
     }
 
     updateWizard(id, name, pages, creator) {
@@ -33,7 +33,7 @@ class WizardService {
             name,
             pages,
             creator
-        });
+        }, { headers: authHeader() });
     }
 
 

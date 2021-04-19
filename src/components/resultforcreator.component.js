@@ -1,9 +1,7 @@
-import React, {Component, Suspense} from "react";
-import {Button, Space, Popconfirm, Table, Tag} from 'antd';
-import WizardService from "../services/wizard.service";
+import React, {Component} from "react";
+import {Table} from 'antd';
 import AuthService from "../services/auth.service";
 import ResultService from "../services/result.service";
-import {Link} from "react-router-dom";
 
 
 export default class ResultTable extends Component {

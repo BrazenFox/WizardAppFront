@@ -1,10 +1,9 @@
-import React, {Component, Suspense} from "react";
-import {Button, Space, Popconfirm, Table, Tag} from 'antd';
+import React, {Component} from "react";
+import {Button, Popconfirm, Space, Table} from 'antd';
 import WizardService from "../services/wizard.service";
-import AuthService from "../services/auth.service";
 import {Link} from "react-router-dom";
 import {PlusOutlined} from "@ant-design/icons";
-
+import AuthService from "../services/auth.service";
 
 export default class WizardTable extends Component {
     constructor(props) {
@@ -31,6 +30,7 @@ export default class WizardTable extends Component {
                     id: wizard.id,
                     name: wizard.name,
                     creator: wizard.creator.username,
+                    creatorId:wizard.creator.id,
                     pages: wizard.pages.map(page => ({
                         key: page.id,
                         id: page.id,
@@ -65,6 +65,7 @@ export default class WizardTable extends Component {
 
 
     render() {
+        const user = AuthService.getCurrentUser();
         const columns = [
             {
                 title: 'Wizard',
@@ -76,26 +77,6 @@ export default class WizardTable extends Component {
                 title: 'Creator',
                 dataIndex: 'creator',
                 key: 'creator',
-                /* render: pages => (
-                     <>
-                         {pages.map(page => {
-                             return (
-                                 <Tag key={page.key}>
-                                     {page.name}
-
-                                     {page.buttons.map(button => {
-                                         return (
-                                             <Tag key={button.key}>
-                                                 {button.name}
-                                             </Tag>
-                                         );
-                                     })}
-
-                                 </Tag>
-                             );
-                         })}
-                     </>
-                 ),*/
             },
             {
                 title: 'Action',
@@ -110,14 +91,15 @@ export default class WizardTable extends Component {
                                 run
                             </Link>
                         </Button>
-                        <Button type="primary">
+                        <Button type="primary"
+                                disabled={!((user.roles.includes("MODERATOR") && user.id === this.state.wizards.find(wizard=>wizard.id===text).creatorId) || (user.roles.includes("ADMIN")))}>
                             <Link to={"/updatewizard/" + text}>
                                 update
                             </Link>
                         </Button>
 
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.deleteWizard(text)}>
-                            <Button type="primary" danger>
+                            <Button type="primary" danger disabled={!((user.roles.includes("MODERATOR") && user.id === this.state.wizards.find(wizard=>wizard.id===text).creatorId) || (user.roles.includes("ADMIN")))}>
                                 Delete
                             </Button>
                         </Popconfirm>

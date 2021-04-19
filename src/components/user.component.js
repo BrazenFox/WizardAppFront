@@ -1,10 +1,8 @@
 import React, {Component, Suspense} from "react";
-import {Button, Space, Popconfirm, Table, Tag} from 'antd';
+import {Button, Popconfirm, Space, Table, Tag} from 'antd';
 import UserService from "../services/user.service";
 import AuthService from "../services/auth.service";
 
-/*const CreateUserForm = React.lazy(() => import('./createuser.component'))
-const UpdateUserForm = React.lazy(() => import('./updateuser.component'))*/
 const UserForm = React.lazy(() => import('./userform.component'))
 
 
