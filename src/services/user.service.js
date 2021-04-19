@@ -20,7 +20,7 @@ class UserService {
             username,
             password,
             roles
-        });
+        }, {headers: authHeader()});
     }
 
     deleteUser(id){
@@ -33,7 +33,7 @@ class UserService {
             username,
             password,
             roles
-        });
+        }, {headers: authHeader()});
     }
 
 

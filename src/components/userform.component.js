@@ -144,11 +144,10 @@ export default class UpdateUserForm extends React.Component {
                 response => {
                     this.setState({
                         username: response.data.username,
-                        password: response.data.password,
+                        password: "",
                         roles: response.data.roles.map((role) => role.name),
 
                     });
-                    console.warn(this.state.roles)
 
                 },
                 error => {
@@ -162,7 +161,6 @@ export default class UpdateUserForm extends React.Component {
                 roles: [],
 
             });
-            console.warn(this.state)
         }
     }
 

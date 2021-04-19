@@ -34,7 +34,6 @@ export default class UserTable extends Component {
                     roles: user.roles,
                     id: user.id
                 }))
-                {console.warn(users)}
                 this.setState({
                     users: users
 

@@ -11,7 +11,7 @@ class ResultService {
             user_id,
             wizard_id,
             notes
-        });
+        }, {headers: authHeader()});
     }
 
     getResultsForUser(id) {
