@@ -53,12 +53,13 @@ export default class Login extends Component {
         this.form.validateAll();
 
         if (this.checkBtn.context._errors.length === 0) {
-            AuthService.login(this.state.username, this.state.password).then(
+            AuthService.loginGraphQL(this.state.username, this.state.password).then(
                 () => {
                     this.props.history.push("/");
                     window.location.reload();
                 },
                 error => {
+                    console.log(error)
                     const resMessage =
                         (error.response &&
                             error.response.data &&

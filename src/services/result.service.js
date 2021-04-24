@@ -7,6 +7,11 @@ const API_URL = 'http://192.168.99.102:8080/result/';
 class ResultService {
 
     createResult(user_id, wizard_id, notes) {
+        console.warn(API_URL + "create", {
+            user_id,
+            wizard_id,
+            notes
+        }, {headers: authHeader()})
         return axios.post(API_URL + "create", {
             user_id,
             wizard_id,
@@ -15,6 +20,7 @@ class ResultService {
     }
 
     getResultsForUser(id) {
+        console.warn(API_URL + 'findforuser/' + id, {headers: authHeader()})
         return axios.get(API_URL + 'findforuser/' + id, {headers: authHeader()});
     }
 

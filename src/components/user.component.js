@@ -26,6 +26,7 @@ export default class UserTable extends Component {
    setUsers(){
         UserService.getUsers().then(
             response => {
+                console.log(response.data)
                 debugger;
                 const users= response.data.map(user => ({
                     key: user.id, // I added this line

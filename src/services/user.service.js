@@ -6,14 +6,10 @@ const API_URL = 'http://192.168.99.102:8080/user/';
 
 class UserService {
     getUsers() {
-        const g = axios.get(API_URL + 'find', { headers: authHeader() });
-        //console.warn(g)
-        return g;
+        return axios.get(API_URL + 'find', { headers: authHeader() });
     }
     getUser(id) {
-        const g = axios.get(API_URL + 'find/' + id, { headers: authHeader() });
-        //console.warn(g)
-        return g;
+        return axios.get(API_URL + 'find/' + id, { headers: authHeader() });
     }
     updateUser(id, username, password, roles) {
         return axios.put(API_URL + "update/" + id, {
