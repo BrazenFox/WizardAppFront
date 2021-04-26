@@ -22,10 +22,16 @@ export default class ResultTable extends Component {
     }
 
     setValues() {
-        ResultService.getResultsForCreator(AuthService.getCurrentUser().id, AuthService.getCurrentUser().roles).then(
+        ResultService.getResultsForCreatorGraphQL(AuthService.getCurrentUser().id, AuthService.getCurrentUser().roles).then(
             response => {
+                var res
+                if (response.data.getResultsForModer){
+                    res=response.data.getResultsForModer
+                }else {
+                    res=response.data.getResults
+                }
                 console.log(response)
-                const results = response.data.map(result => ({
+                const results = res.map(result => ({
                     key: result.id,
                     id: result.id,
                     creator: result.wizard.creator,

@@ -104,7 +104,7 @@ export default class RunWizard extends Component {
         })
         if (this.state.pages.find(page => page.id === toPageId).type === "FINISH") {
             console.log("FINISH")
-            ResultService.createResult(AuthService.getCurrentUser().id, this.state.id, notes)
+            ResultService.createResultGraphQL(AuthService.getCurrentUser().id, this.state.id, notes)
         }
         /*return (<></>
         )*/

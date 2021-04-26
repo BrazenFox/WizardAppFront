@@ -32,7 +32,7 @@ export default class ResultTable extends Component {
                     wizard: result.wizard.name,
                     user: result.user.username,
                     date: result.date,
-                    notes: result.notes.map(n => ({
+                    notes: result.note.map(n => ({
                         key: n.page.id,
                         page: n.page.name,
                         button: n.button.name
