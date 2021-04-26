@@ -17,18 +17,20 @@ export default class UserTable extends Component {
 
 
     deleteUser(id) {
-        UserService.deleteUser(id).then(() => this.setUsers())
+        UserService.deleteUserGraphQL(id).then(() => {
+            this.setUsers()
+        })
     }
 
 
 
 
    setUsers(){
-        UserService.getUsers().then(
+        UserService.getUsersGraphQL().then(
             response => {
-                console.log(response.data)
+                console.log(response.data.getUsers)
                 debugger;
-                const users= response.data.map(user => ({
+                const users= response.data.getUsers.map(user => ({
                     key: user.id, // I added this line
                     username: user.username,
                     password: user.password,

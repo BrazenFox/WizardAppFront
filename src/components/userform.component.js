@@ -50,14 +50,14 @@ export default class UpdateUserForm extends React.Component {
     }
 
     create() {
-        UserService.createUser(
+        UserService.createUserGraphQL(
             this.state.username,
             this.state.password,
             this.state.roles
         ).then(
             response => {
                 this.setState({
-                    message: response.data.message,
+                    message: response.data.createUser.message,
                     successful: true,
                     visible: false,
                 });
@@ -82,7 +82,7 @@ export default class UpdateUserForm extends React.Component {
 
 
     update() {
-        UserService.updateUser(
+        UserService.updateUserGraphQL(
             this.state.id,
             this.state.username,
             this.state.password,
@@ -90,7 +90,7 @@ export default class UpdateUserForm extends React.Component {
         ).then(
             response => {
                 this.setState({
-                    message: response.data.message,
+                    message: response.data.updateUser.message,
                     successful: true,
                     visible: false
 
@@ -140,12 +140,13 @@ export default class UpdateUserForm extends React.Component {
 
     setValues() {
         if (this.state.id) {
-            UserService.getUser(this.state.id).then(
+            UserService.getUserGraphQL(this.state.id).then(
                 response => {
+                    console.warn(response)
                     this.setState({
-                        username: response.data.username,
+                        username: response.data.getUser.username,
                         password: "",
-                        roles: response.data.roles.map((role) => role.name),
+                        roles: response.data.getUser.roles.map((role) => role.name),
 
                     });
 

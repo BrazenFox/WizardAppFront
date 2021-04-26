@@ -15,17 +15,19 @@ export default class WizardTable extends Component {
 
 
     deleteWizard(id) {
-        WizardService.deleteWizard(id).then(() => this.componentDidMount());
+        WizardService.deleteWizardGraphQL(id).then(() => {
+            this.componentDidMount()
+        });
 
         //window.location.reload();
         //this.props.history.push('/user')
     }
 
     componentDidMount() {
-        WizardService.getWizards().then(
+        WizardService.getWizardsGraphQL().then(
             response => {
                 debugger;
-                const wizards = response.data.map(wizard => ({
+                const wizards = response.data.getWizards.map(wizard => ({
                     key: wizard.id, // I added this line
                     id: wizard.id,
                     name: wizard.name,

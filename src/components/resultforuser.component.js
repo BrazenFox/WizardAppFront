@@ -22,17 +22,17 @@ export default class ResultTable extends Component {
     }
 
     setValues() {
-        ResultService.getResultsForUser(AuthService.getCurrentUser().id).then(
+        ResultService.getResultsForUserGraphQL(AuthService.getCurrentUser().id).then(
             response => {
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                const results = response.data.map(result => ({
+                console.log(response)
+                const results = response.data.getResultsForUser.map(result => ({
                     key: result.id,
                     id: result.id,
                     creator: result.wizard.creator,
                     wizard: result.wizard.name,
                     user: result.user.username,
                     date: result.date,
-                    notes: result.note.map(n => ({
+                    notes: result.notes.map(n => ({
                         key: n.page.id,
                         page: n.page.name,
                         button: n.button.name

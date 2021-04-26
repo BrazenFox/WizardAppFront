@@ -22,13 +22,13 @@ export default class RunWizard extends Component {
     }
 
     componentDidMount() {
-        WizardService.getWizard(this.state.id).then(
+        WizardService.getWizardGraphQL(this.state.id).then(
             response => {
                 debugger;
                 //console.log(response.data)
-                const name = response.data.name
-                const creator = response.data.creator
-                const pages = response.data.pages.map(page => ({
+                const name = response.data.getWizard.name
+                const creator = response.data.getWizard.creator
+                const pages = response.data.getWizard.pages.map(page => ({
                     key: page.id, // I added this line
                     id: page.id,
                     name: page.name,

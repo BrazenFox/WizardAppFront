@@ -24,7 +24,7 @@ export default class ResultTable extends Component {
     setValues() {
         ResultService.getResultsForCreator(AuthService.getCurrentUser().id, AuthService.getCurrentUser().roles).then(
             response => {
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                console.log(response)
                 const results = response.data.map(result => ({
                     key: result.id,
                     id: result.id,

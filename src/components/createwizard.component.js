@@ -53,12 +53,12 @@ export default class WizardForm extends React.Component {
     setValues() {
         if (this.state.id) {
             // console.log("!!!!!!!!!!!!!!!")
-            WizardService.getWizard(this.state.id).then(
+            WizardService.getWizardGraphQL(this.state.id).then(
                 response => {
                     //console.log(response.data, "!!!!!!!!!!!!!!!!!")
-                    const name = response.data.name
-                    const creator = response.data.creator
-                    const pages = response.data.pages.map(page => ({
+                    const name = response.data.getWizard.name
+                    const creator = response.data.getWizard.creator
+                    const pages = response.data.getWizard.pages.map(page => ({
                         key: page.id, // I added this line
                         id: page.id,
                         name: page.name,
@@ -118,10 +118,10 @@ export default class WizardForm extends React.Component {
             creator: creator,
             pages: pages
         })
-        WizardService.createWizard(this.state.name, this.state.pages, this.state.creator).then(
+        WizardService.createWizardGraphQl(this.state.name, this.state.pages, this.state.creator).then(
             response => {
                 this.setState({
-                    message: response.data.message,
+                    message: response.data.createWizard,
                     successful: true,
                 });
                 this.props.history.push("/wizard")
@@ -163,10 +163,10 @@ export default class WizardForm extends React.Component {
             pages: pages
         })
         console.log(this.state)
-        WizardService.updateWizard(this.state.id, this.state.name, this.state.pages, this.state.creator).then(
+        WizardService.updateWizardGraphQl(this.state.id, this.state.name, this.state.pages, this.state.creator).then(
             response => {
                 this.setState({
-                    message: response.data.message,
+                    message: response.data.updateWizard,
                     successful: true,
                 });
                 this.props.history.push("/wizard")
