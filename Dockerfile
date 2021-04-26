@@ -26,7 +26,6 @@
 #docker build -t wizard-front .
 #docker run -it --rm -p 3000:3000/tcp --name wizard-front-app wizard-front
 #docker stop wizard-front-app
-#docker rm wizard-front-app
 
 # pull official base image
 FROM node:13.12.0-alpine
@@ -42,6 +41,10 @@ RUN npm install react-scripts@3.4.1 -g
 
 # add app
 COPY . ./
+
+#########
+EXPOSE 3000
+#########
 
 # start app
 CMD ["npm", "start"]

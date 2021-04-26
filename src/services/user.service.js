@@ -5,7 +5,8 @@ import {ApolloClient, gql, InMemoryCache} from "@apollo/client";
 //const API_URL = 'http://localhost:8080/user/';
 const API_URL = 'http://192.168.99.102:8080/user/';
 const client = new ApolloClient({
-    uri: "http://localhost:8081/query",
+    //uri: "http://localhost:8081/query",
+    uri: "http://192.168.99.102:8081/query",
     cache: new InMemoryCache(),
 })
 
