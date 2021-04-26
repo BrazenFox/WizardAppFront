@@ -75,41 +75,7 @@ class ResultService {
         if (roles.includes("ADMIN")) {
             return axios.get(API_URL + 'findall', {headers: authHeader()});
         } else if (!roles.includes("ADMIN") && roles.includes("MODERATOR")) {
-            return client.query({
-                variables: {token: authHeader().Authorization, id},
-                query: gql`
-                query getResultsForModer($token: String!, $id: ID!) {
-                     getResultsForModer(input: {token: $token, id: $id})
-                     {
-                        id
-                        wizard{
-                            id
-                            name
-                            creator{
-                                id
-                                username
-                            }
-                        }
-                        
-                        user{
-                            id
-                            username
-                        }
-                        date
-                        notes{
-                          page{
-                            id
-                            name
-                          }
-                          button{
-                            id
-                            name
-                          }
-                        }
-                    }
-                }
-            `
-            });
+            return axios.get(API_URL + 'findformoder/' + id, {headers: authHeader()});
         }
     }
 
