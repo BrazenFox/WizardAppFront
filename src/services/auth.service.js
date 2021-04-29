@@ -48,7 +48,7 @@ class AuthService {
         })
     }
 
-    login(username, password) {
+    /*login(username, password) {
         return axios
             .post(API_URL + "login", {
                 username,
@@ -63,12 +63,12 @@ class AuthService {
                 console.warn(response.data)
                 return response.data;
             });
-    }
+    }*/
 
-    logout() {
+   /* logout() {
         localStorage.removeItem("user");
         axios.post(API_URL + "logout", {headers: authHeader()}, {headers: authHeader()})
-    }
+    }*/
 
 
 

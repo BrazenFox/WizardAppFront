@@ -24,7 +24,7 @@
 
 
 #docker build -t wizard-front .
-#docker run -it --rm -p 3000:3000/tcp --name wizard-front-app wizard-front
+#docker run --env-file ./env.list -it --rm -p 3000:3000/tcp --name wizard-front-app wizard-front
 #docker stop wizard-front-app
 
 # pull official base image
@@ -37,6 +37,7 @@ WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
+
 RUN npm install react-scripts@3.4.1 -g
 
 # add app
