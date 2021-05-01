@@ -3,10 +3,10 @@ import authHeader from './auth-header';
 import {ApolloClient, InMemoryCache} from "@apollo/client";
 import {gql, useMutation} from '@apollo/client'
 //const API_URL = "http://localhost:8080/auth/";
-const API_URL = 'http://192.168.99.102:8080/auth/';
+const API_URL = process.env.REACT_APP_SERVER_URL + '/auth/';
 const client = new ApolloClient({
     //uri: "http://localhost:8081/query",
-    uri: "http://192.168.99.102:8081/query",
+    uri: process.env.REACT_APP_SERVER_URL,
     cache: new InMemoryCache(),
 })
 
@@ -37,6 +37,7 @@ class AuthService {
             return response.data.loginAuth
         })
     }
+
     logoutGraphQL() {
         localStorage.removeItem("user");
         client.query({
@@ -65,12 +66,10 @@ class AuthService {
             });
     }*/
 
-   /* logout() {
-        localStorage.removeItem("user");
-        axios.post(API_URL + "logout", {headers: authHeader()}, {headers: authHeader()})
-    }*/
-
-
+    /* logout() {
+         localStorage.removeItem("user");
+         axios.post(API_URL + "logout", {headers: authHeader()}, {headers: authHeader()})
+     }*/
 
 
     getCurrentUser() {
