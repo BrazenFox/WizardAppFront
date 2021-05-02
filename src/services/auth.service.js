@@ -6,7 +6,7 @@ import {gql, useMutation} from '@apollo/client'
 const API_URL = process.env.REACT_APP_SERVER_URL + '/auth/';
 const client = new ApolloClient({
     //uri: "http://localhost:8081/query",
-    uri: process.env.REACT_APP_SERVER_URL,
+    uri: (process.env.REACT_APP_SERVER_URL && process.env.REACT_APP_SERVER_URL) || "http://192.168.99.102:8081/query",
     cache: new InMemoryCache(),
 })
 

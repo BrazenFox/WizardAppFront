@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-console.log(process.env)
+import wizardLogo from'./wizard.png';
 const example1 = process.env.REACT_APP_PROXY;
 const example2 = process.env.REACT_APP_SERVER_URL;
 export default class Home extends Component {
@@ -15,9 +15,13 @@ export default class Home extends Component {
     render() {
         return (
 
-            <header>
-                <h1>{this.state.content}  +  {example1} +  {example2} </h1>
-            </header>
+            <div className="container">
+                <header>
+                    <h1>{this.state.content}</h1>
+                </header>
+                <img  src={wizardLogo} />
+            </div>
+
 
         );
     }
