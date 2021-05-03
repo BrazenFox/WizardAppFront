@@ -106,12 +106,12 @@ export default class WizardForm extends React.Component {
             name: page.name,
             type: page.type,
             content: page.content,
-            buttons: page.buttons && page.buttons.map(button => ({
+            buttons: (page.buttons && page.buttons.map(button => ({
                 name: button.name,
                 toPage: {
                     name: button.toPage,
                 }
-            }))
+            }))) || []
         }))
         this.setState({
             name: name,
@@ -149,12 +149,12 @@ export default class WizardForm extends React.Component {
             name: page.name,
             content: page.content,
             type: page.type,
-            buttons: page.buttons && page.buttons.map(button => ({
+            buttons: (page.buttons && page.buttons.map(button => ({
                 name: button.name,
                 toPage: {
                     name: button.toPage,
                 }
-            }))
+            }))) || []
         }))
 
         this.setState({
@@ -201,14 +201,25 @@ export default class WizardForm extends React.Component {
         }
     }
 
-    test = (value) => {
-        console.warn(value)
+    onFinishFailed = (value) => {
+        if (value.pages === undefined || value.pages.length === 0) {
+            this.setState({
+                message: "Pages is required",
+                successful: false
+            })
+        } else {
+            this.setState({
+                message: "Check the entered data",
+                successful: false
+            })
+        }
+
     }
 
     validPage(value, field) {
         var count = 0
         value.fields.pages.forEach(page => {
-            if (page.name === field) {
+            if (page && page.name === field) {
                 count++
             }
         })
@@ -220,10 +231,19 @@ export default class WizardForm extends React.Component {
         }
     }
 
+    validPages(value, field) {
+        if (value.fields.pages === undefined || value.fields.pages.length === 0) {
+            return Promise.reject("Pages is required");
+        } else {
+            return Promise.resolve();
+        }
+    }
+
+
     validButton(value, field) {
         var count = 0
         value.fields.buttons.forEach(button => {
-            if (button.name === field) {
+            if (button && button.name === field) {
                 count++
             }
         })
@@ -235,14 +255,22 @@ export default class WizardForm extends React.Component {
     }
 
     validType(value, field) {
-        var count = 0
+        var countStart = 0
+        var countFinish = 0
         value.fields.pages.forEach(page => {
-            if (page.type === "START") {
-                count++
+            if (page && page.type === "START") {
+                countStart++
+            }
+            if (page && page.type === "FINISH") {
+                countFinish++
             }
         })
-        if (count > 1) {
+        if (countStart > 1) {
             return Promise.reject("There can be only one START page");
+        } else if (countStart === 0) {
+            return Promise.reject("there should be one START page");
+        } else if (countFinish === 0) {
+            return Promise.reject("There must be at least one FINISH page");
         } else {
             return Promise.resolve();
         }
@@ -253,7 +281,7 @@ export default class WizardForm extends React.Component {
         return (
             <>
                 <Form ref={this.formRef} name="dynamic_form_nest_item" onFinish={this.onFinish}
-                      onFinishFailed={this.test}
+                      onFinishFailed={this.onFinishFailed}
                       onValuesChange={this.changeState}
                       initialValues={this.state.id && {
                           pages: this.state.pages,
@@ -269,7 +297,6 @@ export default class WizardForm extends React.Component {
                     )
 
                     }
-
 
 
                     <Row>
@@ -292,7 +319,14 @@ export default class WizardForm extends React.Component {
                     </Row>
 
 
-                    <Form.List name="pages">
+                    <Form.List name="pages"
+                               rules={[{
+                                   required: true,
+                                   message: "Pages is required"
+                               }, {
+                                   fields: this.state,
+                                   validator: this.validPages
+                               }]}>
                         {(pages, {add, remove}) => (
                             <>
                                 {pages.map(page => (
@@ -447,7 +481,6 @@ export default class WizardForm extends React.Component {
                             Submit
                         </Button>
                     </Form.Item>
-
 
 
                 </Form>
