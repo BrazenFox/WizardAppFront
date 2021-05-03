@@ -28,7 +28,7 @@ export default class ResultTable extends Component {
                 const results = response.data.getResultsForUser.map(result => ({
                     key: result.id,
                     id: result.id,
-                    creator: result.wizard.creator,
+                    creator: result.wizard.creator.username,
                     wizard: result.wizard.name,
                     user: result.user.username,
                     date: result.date,

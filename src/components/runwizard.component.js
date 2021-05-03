@@ -25,7 +25,7 @@ export default class RunWizard extends Component {
         WizardService.getWizardGraphQL(this.state.id).then(
             response => {
                 debugger;
-                //console.log(response.data)
+                console.log(response.data)
                 const name = response.data.getWizard.name
                 const creator = response.data.getWizard.creator
                 const pages = response.data.getWizard.pages.map(page => ({
@@ -49,6 +49,7 @@ export default class RunWizard extends Component {
                 }))
                 //console.log(pages)
                 const current = pages.find(page => page.type === "START")
+
                 const currentPage = {
                     key: current.id,
                     id: current.id,

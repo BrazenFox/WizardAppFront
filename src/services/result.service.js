@@ -50,7 +50,6 @@ class ResultService {
                             id
                             name
                             creator{
-                                id
                                 username
                             }
                         }

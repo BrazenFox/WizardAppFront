@@ -75,7 +75,6 @@ class WizardService {
                                 toPage{
                                     id
                                     name
-                                    type
                                 }
                             }
                         }
