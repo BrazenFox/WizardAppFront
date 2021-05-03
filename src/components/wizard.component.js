@@ -100,7 +100,7 @@ export default class WizardTable extends Component {
                             </Link>
                         </Button>
 
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.deleteWizard(text)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => this.deleteWizard(text)} disabled={!((user.roles.includes("MODERATOR") && user.id === this.state.wizards.find(wizard=>wizard.id===text).creatorId) || (user.roles.includes("ADMIN")))}>
                             <Button type="primary" danger disabled={!((user.roles.includes("MODERATOR") && user.id === this.state.wizards.find(wizard=>wizard.id===text).creatorId) || (user.roles.includes("ADMIN")))}>
                                 Delete
                             </Button>
@@ -117,7 +117,7 @@ export default class WizardTable extends Component {
         ];
         return (
             <div>
-                <Button type="primary">
+                <Button type="primary" disabled={!(user.roles.includes("MODERATOR") || user.roles.includes("ADMIN"))}>
                     <Link to={"/createwizard"}>
                         <PlusOutlined/> Create wizard
                     </Link>
