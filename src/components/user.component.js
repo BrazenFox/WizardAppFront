@@ -33,7 +33,7 @@ export default class UserTable extends Component {
                 const users= response.data.getUsers.map(user => ({
                     key: user.id, // I added this line
                     username: user.username,
-                    password: user.password,
+                    password: "*".repeat(user.password.length),
                     roles: user.roles,
                     id: user.id
                 }))
